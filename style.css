@@ -1,0 +1,72 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f0f0f0;
+    font-family: 'Malgun Gothic', sans-serif;
+    margin-top: 50px;
+}
+
+#gameContainer {
+    position: relative; /* UI를 캔버스 위에 겹쳐 띄우기 위한 필수 속성 */
+}
+
+canvas {
+    background-color: #87CEEB;
+    border: 4px solid #333;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    display: block;
+}
+
+/* 게임 종료 창 디자인 */
+#gameOverUI {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* 반투명 검은 배경 */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    color: white;
+}
+
+/* UI 숨김 처리용 클래스 */
+.hidden {
+    display: none !important;
+}
+
+#winnerText {
+    font-size: 48px;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 4px #000;
+    text-align: center;
+    line-height: 1.2;
+    white-space: pre-line;
+}
+
+/* 다시 하기 버튼 디자인 */
+#restartBtn {
+    padding: 15px 30px;
+    font-size: 24px;
+    font-weight: bold;
+    background-color: #ffeb3b;
+    color: #333;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    transition: transform 0.1s;
+}
+
+#restartBtn:hover {
+    background-color: #fdd835;
+}
+
+#restartBtn:active {
+    transform: scale(0.95); /* 클릭 시 살짝 눌리는 효과 */
+}
