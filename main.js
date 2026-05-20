@@ -36,6 +36,8 @@ const GROUND_Y = canvas.height - 10;
 let score1 = 0;
 let score2 = 0;
 let gameState = 'playing';
+let bounceLeft = 1;  // 왼쪽 코트에 남은 땅볼 찬스
+let bounceRight = 1; // 오른쪽 코트에 남은 땅볼 찬스
 
 // 본부대항전용 — 조작이 쉽고 공이 천천히 움직이도록 튜닝
 const GRAVITY = 0.35;
@@ -98,6 +100,10 @@ function resetRound(server) {
     ball.x = server === 1 ? 200 : canvas.width - 200;
     ball.y = 80;
     ball.vx = 0; ball.vy = 0; ball.rotation = 0;
+
+    // 라운드 시작마다 양 팀 땅볼 찬스 1회씩 복구
+    bounceLeft = 1;
+    bounceRight = 1;
 
     setTimeout(() => {
         if (gameState !== 'gameover') gameState = 'playing';
@@ -227,8 +233,20 @@ function update() {
     handlePlayerBallCollision(player2);
 
     if (ball.y + ball.radius >= GROUND_Y) {
-        if (ball.x < net.x + net.width / 2) { score2++; resetRound(2); }
-        else { score1++; resetRound(1); }
+        const onLeft = ball.x < net.x + net.width / 2;
+        const chances = onLeft ? bounceLeft : bounceRight;
+
+        if (chances > 0) {
+            // 땅볼 찬스 사용 — 공이 위로 튕김
+            if (onLeft) bounceLeft--; else bounceRight--;
+            ball.y = GROUND_Y - ball.radius;
+            ball.vy = -Math.max(8, Math.abs(ball.vy) * 0.8); // 적당히 위로 튕김
+            ball.vx *= 0.7; // 좌우 속도는 살짝 감속
+        } else {
+            // 찬스 없음 → 실점
+            if (onLeft) { score2++; resetRound(2); }
+            else        { score1++; resetRound(1); }
+        }
     }
 }
 
@@ -339,6 +357,11 @@ function drawHUD() {
     ctx.fillStyle = '#444';
     ctx.fillText(player1.name, canvas.width * 0.25, 95);
     ctx.fillText(player2.name, canvas.width * 0.75, 95);
+
+    // 남은 땅볼 찬스 — 하트로 표시
+    ctx.font = '18px Arial';
+    ctx.fillText(bounceLeft  > 0 ? '❤️ 찬스 1' : '🤍 찬스 0', canvas.width * 0.25, 118);
+    ctx.fillText(bounceRight > 0 ? '❤️ 찬스 1' : '🤍 찬스 0', canvas.width * 0.75, 118);
 
     if (gameState === 'ready') {
         ctx.fillStyle = '#d33';
