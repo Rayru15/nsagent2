@@ -3,19 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>사내대항전: 배구 게임</title>
+    <title>🏐 본부대항전 1:1 배구</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>🔥 본부대항전 1:1 배구 🔥</h1>
+    <h1>🏐 본부대항전 1:1 배구 🏐</h1>
 
     <div id="gameContainer">
-        <canvas id="gameCanvas" width=1000" height="500"></canvas>
+        <canvas id="gameCanvas" width="1000" height="500"></canvas>
 
+        <!-- 게임 시작 전 오버레이 -->
+        <div id="startUI">
+            <h2>🏐 본부대항전 1:1 배구</h2>
+
+            <div class="name-inputs">
+                <div class="name-group">
+                    <label for="name1">🟡 1팀 본부 이름</label>
+                    <input id="name1" type="text" maxlength="10" placeholder="예) 경영지원본부" />
+                </div>
+                <div class="name-vs">VS</div>
+                <div class="name-group">
+                    <label for="name2">🟠 2팀 본부 이름</label>
+                    <input id="name2" type="text" maxlength="10" placeholder="예) 마케팅본부" />
+                </div>
+            </div>
+
+            <div class="start-row">
+                <button id="startBtn">⚡ 게임 시작!</button>
+                <button id="helpBtn">📋 조작설명</button>
+            </div>
+        </div>
+
+        <!-- 일시정지 버튼 (게임 중에만 표시) -->
+        <button id="pauseBtn" class="hidden">⏸</button>
+
+        <!-- 일시정지 오버레이 -->
+        <div id="pauseUI" class="hidden">
+            <h2>⏸ 일시정지</h2>
+            <button id="resumeBtn">▶ 계속하기</button>
+            <button id="homeFromPauseBtn">🏠 메인으로</button>
+        </div>
+
+        <!-- 게임 종료 오버레이 -->
         <div id="gameOverUI" class="hidden">
             <h2 id="winnerText">Game Set!</h2>
-            <button id="restartBtn">다시 하기</button>
+            <div class="gameover-row">
+                <button id="restartBtn">🔄 다시 하기</button>
+                <button id="homeFromOverBtn">🏠 홈으로</button>
+            </div>
         </div>
+    </div>
+
+    <!-- 조작설명 모달 -->
+    <div id="helpModal" class="hidden">
+        <div id="helpBox">
+            <h3>📋 조작설명</h3>
+            <div class="controls-grid">
+                <div class="ctrl-box team1">
+                    <div class="ctrl-title">🟡 1팀 (WASD)</div>
+                    <div class="ctrl-keys"><span class="key">A</span><span class="key">D</span> 이동</div>
+                    <div class="ctrl-keys"><span class="key">W</span> 점프</div>
+                    <div class="ctrl-keys"><span class="key">Q</span> 스파이크 <span class="sub">(공중)</span></div>
+                    <div class="ctrl-keys"><span class="key">Q</span> 슬라이딩 <span class="sub">(땅)</span></div>
+                </div>
+                <div class="ctrl-box team2">
+                    <div class="ctrl-title">🟠 2팀 (방향키)</div>
+                    <div class="ctrl-keys"><span class="key">←</span><span class="key">→</span> 이동</div>
+                    <div class="ctrl-keys"><span class="key">↑</span> 점프</div>
+                    <div class="ctrl-keys"><span class="key">/</span> 스파이크 <span class="sub">(공중)</span></div>
+                    <div class="ctrl-keys"><span class="key">/</span> 슬라이딩 <span class="sub">(땅)</span></div>
+                </div>
+            </div>
+            <div class="help-rule">🏐 공이 바닥에 닿으면 실점 · 먼저 10점 승리!</div>
+            <button id="helpCloseBtn">닫기</button>
+        </div>
+    </div>
+
+    <div id="volumeBar">
+        <label for="bgmVolume">🎵 BGM</label>
+        <input id="bgmVolume" type="range" min="0" max="100" value="50" />
+        <span id="bgmVolumeVal">50%</span>
     </div>
 
     <script src="main.js"></script>
