@@ -782,10 +782,18 @@ function drawNet() {
 
 function drawPlayer(p, imgKey) {
     if (imgReady(imgKey)) {
-        const size = p.radius *5
+        const size = p.radius * 5;
+        // 이동 방향에 따라 반전: 왼쪽 이동 시 좌향, 오른쪽 이동 시 우향
+        // 정지 중엔 각자 기본 방향(player1=우, player2=좌) 유지
+        const movingLeft  = p.vx < -0.5;
+        const movingRight = p.vx >  0.5;
+        const facingRight = p.side === 'left'
+            ? !movingLeft              // player1: 기본 우향, 왼쪽 이동 시 좌향
+            : movingRight;             // player2: 기본 좌향(이미지 반전됨), 오른쪽 이동 시 우향(반전 해제)
+        const flipX = facingRight ? 1 : -1;
         ctx.save();
         ctx.translate(p.x, p.y);
-        ctx.scale(p.squashX * (p.side === 'right' ? -1 : 1), p.squashY);
+        ctx.scale(p.squashX * flipX, p.squashY);
         ctx.drawImage(images[imgKey], -size / 2, -size / 2, size, size);
         ctx.restore();
         return;
