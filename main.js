@@ -247,7 +247,7 @@ function makePlayer(x, color, eyeColor, cheekColor, side, name) {
 const player1 = makePlayer(150,               '#FFE033', '#1a1a1a', '#FF6B6B', 'left',  '본부 1팀');
 const player2 = makePlayer(canvas.width - 150,'#FF8C1A', '#1a1a1a', '#FF6B6B', 'right', '본부 2팀');
 
-const net = { x: canvas.width / 2 - 4, y: GROUND_Y - 140, width: 8, height: 140 };
+const net = { x: canvas.width / 2 - 4, y: GROUND_Y - 110, width: 8, height: 130 };
 
 const ball = {
     x: 200, y: 100, vx: 0, vy: 0,
