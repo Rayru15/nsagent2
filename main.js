@@ -787,10 +787,14 @@ function drawPlayer(p, imgKey) {
         // 정지 중엔 각자 기본 방향(player1=우, player2=좌) 유지
         const movingLeft  = p.vx < -0.5;
         const movingRight = p.vx >  0.5;
-        const facingRight = p.side === 'left'
-            ? !movingLeft              // player1: 기본 우향, 왼쪽 이동 시 좌향
-            : movingRight;             // player2: 기본 좌향(이미지 반전됨), 오른쪽 이동 시 우향(반전 해제)
-        const flipX = facingRight ? 1 : -1;
+        let flipX;
+        if (p.side === 'left') {
+            // player1: 이미지 기본 우향 → 왼쪽 이동 시 반전(-1), 나머지 정방향(1)
+            flipX = movingLeft ? -1 : 1;
+        } else {
+            // player2: 이미지 기본 좌향(이미 반전 이미지) → 오른쪽 이동 시 반전(-1), 나머지 정방향(1)
+            flipX = movingRight ? -1 : 1;
+        }
         ctx.save();
         ctx.translate(p.x, p.y);
         ctx.scale(p.squashX * flipX, p.squashY);
