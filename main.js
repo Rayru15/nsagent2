@@ -78,6 +78,12 @@ function stopBGM() {
     bgmSource = null;
     bgmGainNode = null;
 }
+function pauseBGM() {
+    try { getAudio().suspend(); } catch (e) {}
+}
+function resumeBGM() {
+    try { getAudio().resume(); } catch (e) {}
+}
 
 loadSound('ball', 'sound/Ball_Sound.mp3');
 loadSound('bgm',  'sound/Game_BGM.mp3');
@@ -380,6 +386,62 @@ function restartGame() {
     resetRound(1);
 }
 
+// =============================================================
+// 🏆 게임 기록 (localStorage)
+// =============================================================
+const RECORD_KEY = 'volleyball_records';
+
+function loadRecords() {
+    try { return JSON.parse(localStorage.getItem(RECORD_KEY)) || []; }
+    catch { return []; }
+}
+function saveRecord(winner, s1, s2, name1, name2) {
+    const records = loadRecords();
+    const now = new Date();
+    const date = `${now.getMonth()+1}/${now.getDate()} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+    records.unshift({ winner, score1: s1, score2: s2, name1, name2, date });
+    if (records.length > 50) records.pop(); // 최대 50개
+    localStorage.setItem(RECORD_KEY, JSON.stringify(records));
+}
+function clearRecords() {
+    localStorage.removeItem(RECORD_KEY);
+}
+function renderRecords() {
+    const records = loadRecords();
+    const list = document.getElementById('recordList');
+    if (records.length === 0) {
+        list.innerHTML = '<div class="record-empty">아직 기록이 없습니다 🏐</div>';
+        return;
+    }
+    list.innerHTML = records.map((r, i) => `
+        <div class="record-item">
+            <span class="record-no">${i + 1}</span>
+            <span class="record-winner">🏆 ${r.winner}</span>
+            <span class="record-score">${r.name1} ${r.score1} : ${r.score2} ${r.name2}</span>
+            <span class="record-date">${r.date}</span>
+        </div>
+    `).join('');
+}
+
+const recordModal   = document.getElementById('recordModal');
+const recordBtn     = document.getElementById('recordBtn');
+const recordCloseBtn = document.getElementById('recordCloseBtn');
+const recordClearBtn = document.getElementById('recordClearBtn');
+
+recordBtn.addEventListener('click', () => {
+    renderRecords();
+    recordModal.classList.remove('hidden');
+});
+recordCloseBtn.addEventListener('click', () => recordModal.classList.add('hidden'));
+recordModal.addEventListener('click', e => { if (e.target === recordModal) recordModal.classList.add('hidden'); });
+recordClearBtn.addEventListener('click', () => {
+    if (confirm('기록을 모두 초기화할까요?')) {
+        clearRecords();
+        renderRecords();
+    }
+});
+// =============================================================
+
 startBtn.addEventListener('click', initGame);
 helpBtn.addEventListener('click', () => helpModal.classList.remove('hidden'));
 helpCloseBtn.addEventListener('click', () => helpModal.classList.add('hidden'));
@@ -397,12 +459,14 @@ pauseBtn.addEventListener('click', () => {
         gameState = 'paused';
         pauseUI.classList.remove('hidden');
         pauseBtn.textContent = '▶';
+        pauseBGM();
     }
 });
 resumeBtn.addEventListener('click', () => {
     pauseUI.classList.add('hidden');
     pauseBtn.textContent = '⏸';
     gameState = 'playing';
+    resumeBGM();
 });
 homeFromPauseBtn.addEventListener('click', goHome);
 
@@ -413,10 +477,12 @@ window.addEventListener('keydown', e => {
             gameState = 'paused';
             pauseUI.classList.remove('hidden');
             pauseBtn.textContent = '▶';
+            pauseBGM();
         } else if (gameState === 'paused') {
             pauseUI.classList.add('hidden');
             pauseBtn.textContent = '⏸';
             gameState = 'playing';
+            resumeBGM();
         }
     }
 });
@@ -426,7 +492,9 @@ function resetRound(server) {
         gameState = 'gameover';
         stopBGM();
         playSound('gameset');
-        winnerText.innerText = `Game Set!\n🎉 ${score1 >= MAX_SCORE ? player1.name : player2.name} 승리! 🎉`;
+        const winner = score1 >= MAX_SCORE ? player1.name : player2.name;
+        saveRecord(winner, score1, score2, player1.name, player2.name);
+        winnerText.innerText = `Game Set!\n🎉 ${winner} 승리! 🎉`;
         gameOverUI.classList.remove('hidden');
         return;
     }
@@ -629,8 +697,8 @@ function handleNetCollision() {
 
 function update() {
     frameCount++;
-    updateParticles();
     if (gameState === 'idle' || gameState === 'gameover' || gameState === 'paused') return;
+    updateParticles();
 
     updatePlayer(player1, { left: 'KeyA',      right: 'KeyD',      up: 'KeyW',    spike: 'KeyQ' });
     updatePlayer(player2, { left: 'ArrowLeft', right: 'ArrowRight', up: 'ArrowUp', spike: 'Slash' });

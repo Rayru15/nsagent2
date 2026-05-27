@@ -46,9 +46,30 @@ canvas {
     justify-content: center;
     gap: 20px;
     padding: 28px 24px;
-    background: rgba(0, 0, 0, 0.7);
     color: #fff;
     font-family: 'Jua', sans-serif;
+}
+
+#startUI {
+    background: url('images/gamestart.png') center center / cover no-repeat;
+}
+
+#startUI::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.52);
+    z-index: 0;
+}
+
+#startUI > * {
+    position: relative;
+    z-index: 1;
+}
+
+#gameOverUI {
+    background: rgba(0, 0, 0, 0.7);
 }
 
 #startUI h2 {
@@ -402,3 +423,144 @@ canvas {
     text-align: right;
     color: #ffeb3b;
 }
+
+/* ── 기록 버튼 ── */
+#recordBtn {
+    font-family: 'Jua', sans-serif;
+    font-size: 16px;
+    padding: 9px 28px;
+    background: rgba(255,255,255,0.13);
+    color: #fff;
+    border: 2px solid rgba(255,255,255,0.45);
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background 0.1s;
+    letter-spacing: 1px;
+}
+#recordBtn:hover { background: rgba(255,255,255,0.23); }
+
+/* ── 기록 모달 ── */
+#recordModal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+#recordBox {
+    background: #1a1a2e;
+    border: 3px solid #ffeb3b;
+    border-radius: 18px;
+    padding: 28px 32px;
+    color: #fff;
+    font-family: 'Jua', sans-serif;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 460px;
+    max-height: 70vh;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+    animation: popIn 0.18s ease;
+}
+
+#recordBox h3 {
+    font-size: 24px;
+    margin: 0;
+    color: #ffeb3b;
+    text-align: center;
+    text-shadow: 1px 1px 4px #000;
+}
+
+#recordList {
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 40vh;
+}
+
+#recordList::-webkit-scrollbar { width: 6px; }
+#recordList::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
+
+.record-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255,255,255,0.07);
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-size: 14px;
+    gap: 10px;
+}
+
+.record-item .record-no {
+    color: #aaa;
+    min-width: 24px;
+    font-size: 13px;
+}
+
+.record-item .record-winner {
+    color: #ffeb3b;
+    font-size: 15px;
+    flex: 1;
+}
+
+.record-item .record-score {
+    color: #fff;
+    font-size: 15px;
+    letter-spacing: 1px;
+}
+
+.record-item .record-date {
+    color: #888;
+    font-size: 12px;
+    min-width: 90px;
+    text-align: right;
+}
+
+.record-empty {
+    text-align: center;
+    color: #888;
+    font-size: 15px;
+    padding: 20px 0;
+}
+
+.record-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    padding-top: 12px;
+}
+
+#recordClearBtn {
+    font-family: 'Jua', sans-serif;
+    font-size: 14px;
+    padding: 8px 20px;
+    background: rgba(255,80,80,0.18);
+    color: #ff8080;
+    border: 2px solid rgba(255,80,80,0.4);
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background 0.1s;
+}
+#recordClearBtn:hover { background: rgba(255,80,80,0.32); }
+
+#recordCloseBtn {
+    font-family: 'Jua', sans-serif;
+    font-size: 15px;
+    padding: 8px 28px;
+    background: #ffeb3b;
+    color: #333;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 3px 0 #c9a800;
+    transition: transform 0.08s, box-shadow 0.08s;
+}
+#recordCloseBtn:hover { background: #fdd835; }
+#recordCloseBtn:active { transform: translateY(2px); box-shadow: 0 1px 0 #c9a800; }
